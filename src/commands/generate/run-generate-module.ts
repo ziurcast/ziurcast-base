@@ -4,6 +4,7 @@ import {
 } from '../../generators/modules/index.js';
 import type { ModuleGenerationSelections } from '../../generators/modules/index.js';
 import { readProjectContext } from '../../project/read-project-context.js';
+import { parseGenerateArguments } from './parse-generate-arguments.js';
 
 const requiredArchitectureFiles = [
   'modules.md',
@@ -16,41 +17,22 @@ const requiredArchitectureFiles = [
   'testing.md',
 ];
 
-const valueFlags = new Set(['--page', '--route', '--api', '--hook']);
+export const generateModuleUsage =
+  'Usage: ziurcast-base generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>]';
 
 export const parseGenerateModuleArguments = (
   args: string[],
 ): { domain: string; selections: ModuleGenerationSelections } => {
-  const domain = args[0];
-
-  if (!domain || domain.startsWith('--')) {
-    throw new Error(
-      'Usage: ziurcast-base generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>]',
-    );
-  }
-
-  const values = new Map<string, string>();
-
-  for (let index = 1; index < args.length; index += 2) {
-    const flag = args[index];
-    const value = args[index + 1];
-
-    if (!flag || !valueFlags.has(flag) || !value || value.startsWith('--')) {
-      throw new Error(`Invalid module option: ${flag ?? ''}`);
-    }
-
-    if (values.has(flag)) {
-      throw new Error(`Module option may only be provided once: ${flag}`);
-    }
-
-    values.set(flag, value);
-  }
-
+  const { name: domain, options } = parseGenerateArguments(
+    args,
+    ['--page', '--route', '--api', '--hook'],
+    generateModuleUsage,
+  );
   const selections: ModuleGenerationSelections = {};
-  const page = values.get('--page');
-  const route = values.get('--route');
-  const api = values.get('--api');
-  const hook = values.get('--hook');
+  const page = options.get('--page');
+  const route = options.get('--route');
+  const api = options.get('--api');
+  const hook = options.get('--hook');
 
   if (page) selections.page = page;
   if (route) selections.route = route;

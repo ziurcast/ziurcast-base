@@ -1,61 +1,89 @@
 #!/usr/bin/env node
 import { runCreateProject } from '../commands/create-project/index.js';
-import { runGenerateCommand } from '../commands/generate/index.js';
-import { runGenerateApiCommand } from '../commands/generate/run-generate-api.js';
-import { runGeneratePageCommand } from '../commands/generate/run-generate-page.js';
-import { runGenerateHookCommand } from '../commands/generate/run-generate-hook.js';
-import { parseGenerateModuleArguments, runGenerateModuleCommand } from '../commands/generate/run-generate-module.js';
+import { generateComponentUsage, runGenerateCommand } from '../commands/generate/index.js';
+import { parseGenerateArguments } from '../commands/generate/parse-generate-arguments.js';
+import { generateApiUsage, runGenerateApiCommand } from '../commands/generate/run-generate-api.js';
+import { generatePageUsage, runGeneratePageCommand } from '../commands/generate/run-generate-page.js';
+import { generateHookUsage, runGenerateHookCommand } from '../commands/generate/run-generate-hook.js';
+import {
+  generateModuleUsage,
+  parseGenerateModuleArguments,
+  runGenerateModuleCommand,
+} from '../commands/generate/run-generate-module.js';
+import { readGeneratorVersion } from '../generators/project/generator-version.js';
+
+const createProjectUsage = 'Usage: ziurcast-base [project-name]';
+
+const helpText = [
+  createProjectUsage,
+  generateComponentUsage,
+  generateHookUsage,
+  generateApiUsage,
+  generatePageUsage,
+  generateModuleUsage,
+  'Usage: ziurcast-base --help | --version',
+].join('\n');
+
+const runGenerate = async (args: string[]): Promise<void> => {
+  const [artifact, ...artifactArgs] = args;
+
+  if (artifact === 'component') {
+    const { name } = parseGenerateArguments(artifactArgs, [], generateComponentUsage);
+    await runGenerateCommand(artifact, name);
+    return;
+  }
+
+  if (artifact === 'module') {
+    const { domain, selections } = parseGenerateModuleArguments(artifactArgs);
+    await runGenerateModuleCommand(domain, selections);
+    return;
+  }
+
+  if (artifact === 'page') {
+    const { name, options } = parseGenerateArguments(
+      artifactArgs,
+      ['--scope', '--route'],
+      generatePageUsage,
+    );
+    await runGeneratePageCommand(name, options.get('--scope'), options.get('--route'));
+    return;
+  }
+
+  if (artifact === 'api') {
+    const { name, options } = parseGenerateArguments(artifactArgs, ['--scope'], generateApiUsage);
+    await runGenerateApiCommand(name, options.get('--scope'));
+    return;
+  }
+
+  if (artifact === 'hook') {
+    const { name, options } = parseGenerateArguments(artifactArgs, ['--scope'], generateHookUsage);
+    await runGenerateHookCommand(name, options.get('--scope'));
+    return;
+  }
+
+  throw new Error(helpText);
+};
 
 const runCli = async (): Promise<void> => {
   const args = process.argv.slice(2);
 
-  if (args[0] === 'generate') {
-    if (args[1] === 'component' && args.length === 3) {
-      await runGenerateCommand(args[1], args[2]);
-      return;
-    }
-
-    if (args[1] === 'module') {
-      const { domain, selections } = parseGenerateModuleArguments(args.slice(2));
-      await runGenerateModuleCommand(domain, selections);
-      return;
-    }
-
-    if (
-      args[1] === 'page' &&
-      args.length === 7 &&
-      args[3] === '--scope' &&
-      args[5] === '--route'
-    ) {
-      await runGeneratePageCommand(args[2], args[4], args[6]);
-      return;
-    }
-
-    if (
-      args[1] === 'api' &&
-      args.length === 5 &&
-      args[3] === '--scope'
-    ) {
-      await runGenerateApiCommand(args[2], args[4]);
-      return;
-    }
-
-    if (
-      args[1] === 'hook' &&
-      args.length === 5 &&
-      args[3] === '--scope'
-    ) {
-      await runGenerateHookCommand(args[2], args[4]);
-      return;
-    }
-
-    throw new Error(
-      'Usage: ziurcast-base generate component <ComponentName> | ziurcast-base generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>] | ziurcast-base generate hook <HookName> --scope <scope> | ziurcast-base generate api <ApiName> --scope <scope> | ziurcast-base generate page <PageName> --scope modules/<domain> --route /<path>',
-    );
+  if (args[0] === '--help' || args[0] === '-h') {
+    console.log(helpText);
+    return;
   }
 
-  if (args.length > 1) {
-    throw new Error('Usage: ziurcast-base [project-name]');
+  if (args[0] === '--version' || args[0] === '-v') {
+    console.log(readGeneratorVersion());
+    return;
+  }
+
+  if (args[0] === 'generate') {
+    await runGenerate(args.slice(1));
+    return;
+  }
+
+  if (args.length > 1 || args[0]?.startsWith('-')) {
+    throw new Error(helpText);
   }
 
   await runCreateProject(args[0]);

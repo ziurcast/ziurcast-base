@@ -1,4 +1,5 @@
 import type { ProjectOptions } from '../../types/project-options.js';
+import { readGeneratorVersion } from './generator-version.js';
 
 const runtimeDependencies: Record<string, string> = {
   '@headlessui/react': '^2.2.0',
@@ -21,7 +22,6 @@ const runtimeDependencies: Record<string, string> = {
 const developmentDependencies: Record<string, string> = {
   '@commitlint/cli': '^20.0.0',
   '@commitlint/config-conventional': '^20.0.0',
-  'ziurcast-base': '^0.1.0',
   '@testing-library/dom': '^10.0.0',
   '@testing-library/jest-dom': '^6.0.0',
   '@testing-library/react': '^16.0.0',
@@ -74,7 +74,10 @@ export const buildPackageManifest = (options: ProjectOptions) => {
       'generate:module': 'ziurcast-base generate module',
     },
     dependencies,
-    devDependencies: developmentDependencies,
+    devDependencies: {
+      ...developmentDependencies,
+      'ziurcast-base': `^${readGeneratorVersion()}`,
+    },
     'lint-staged': {
       '*.{js,jsx,ts,tsx}': [
         'eslint --fix',

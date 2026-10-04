@@ -11,15 +11,16 @@ const requiredArchitectureFiles = [
   'components.md',
 ];
 
+export const generateHookUsage =
+  'Usage: ziurcast-base generate hook <HookName> --scope <scope>';
+
 export const runGenerateHookCommand = async (
   hookName: string | undefined,
   scope: string | undefined,
   workingDirectory = process.cwd(),
 ): Promise<void> => {
   if (!hookName || !scope) {
-    throw new Error(
-      'Usage: ziurcast-base generate hook <HookName> --scope <scope>',
-    );
+    throw new Error(generateHookUsage);
   }
 
   const nameError = validateHookName(hookName);

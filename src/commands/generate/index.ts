@@ -4,15 +4,16 @@ import { readComponentProjectContext } from '../../generators/components/project
 import { validateComponentName } from '../../generators/components/component-name.js';
 import type { ComponentDefinition } from '../../types/component-generator.js';
 
+export const generateComponentUsage =
+  'Usage: ziurcast-base generate component <ComponentName>';
+
 export const runGenerateCommand = async (
   command: string | undefined,
   componentName: string | undefined,
   workingDirectory = process.cwd(),
 ): Promise<void> => {
   if (command !== 'component' || !componentName) {
-    throw new Error(
-      'Usage: ziurcast-base generate component <ComponentName>',
-    );
+    throw new Error(generateComponentUsage);
   }
 
   const nameError = validateComponentName(componentName);

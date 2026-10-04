@@ -11,6 +11,9 @@ const requiredArchitectureFiles = [
   'testing.md',
 ];
 
+export const generatePageUsage =
+  'Usage: ziurcast-base generate page <PageName> --scope modules/<domain> --route /<path>';
+
 export const runGeneratePageCommand = async (
   pageName: string | undefined,
   scope: string | undefined,
@@ -18,9 +21,7 @@ export const runGeneratePageCommand = async (
   workingDirectory = process.cwd(),
 ): Promise<void> => {
   if (!pageName || !scope || !route) {
-    throw new Error(
-      'Usage: ziurcast-base generate page <PageName> --scope modules/<domain> --route /<path>',
-    );
+    throw new Error(generatePageUsage);
   }
 
   const nameError = validatePageName(pageName);

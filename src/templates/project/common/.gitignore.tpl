@@ -7,3 +7,4 @@ coverage/
 .turbo/
 *.tsbuildinfo
 next-env.d.ts
+.project-base-generator-stage-*/
