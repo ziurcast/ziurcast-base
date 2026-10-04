@@ -65,6 +65,16 @@ npm pack
 
 Generated applications include scripts for development, testing, linting, formatting, typechecking, building, and artifact generation. Their complete validation flow is documented in the copied `architecture/testing.md`.
 
+## Releasing
+
+Releases are cut from an up-to-date, clean `main` with a single command:
+
+```bash
+npm run release -- <major|minor|patch|x.y.z> [--dry-run] [--yes] [--smoke] [--skip-ci-check]
+```
+
+It verifies the branch, the npm login, and the GitHub Actions run for the release commit; runs tests, typecheck, lint, and build (plus the release smoke with `--smoke`); prepends the release notes to `CHANGELOG.md` from Conventional Commits; bumps `package.json` and `package-lock.json`; commits `chore(release): vX.Y.Z` and tags `vX.Y.Z`; asks for confirmation and runs `npm publish`; pushes the commit and tag; and creates the GitHub release. Use `--dry-run` to preview the version and notes without changing anything.
+
 ## License
 
 [MIT](LICENSE)
