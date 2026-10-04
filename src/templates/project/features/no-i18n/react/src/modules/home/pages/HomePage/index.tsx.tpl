@@ -24,9 +24,9 @@ export const HomePage = () => (
           <img
             src="/logo.svg"
             alt="ziurcast"
-            width={48}
-            height={48}
-            className="rounded-md"
+            width={222}
+            height={40}
+            className="h-10 w-auto"
           />
           <span className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-sm font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
             <span aria-hidden className="size-2 rounded-full bg-emerald-500" />

@@ -7,7 +7,7 @@
       name="description"
       content="A project generated with Project Base Generator."
     />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <title>{{projectName}}</title>
   </head>
   <body>
