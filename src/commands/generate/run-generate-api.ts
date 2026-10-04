@@ -11,13 +11,16 @@ const requiredArchitectureFiles = [
   'coding-standards.md',
 ];
 
+export const generateApiUsage =
+  'Usage: ziurcast-base generate api <ApiName> --scope <scope>';
+
 export const runGenerateApiCommand = async (
   apiName: string | undefined,
   scope: string | undefined,
   workingDirectory = process.cwd(),
 ): Promise<void> => {
   if (!apiName || !scope) {
-    throw new Error('Usage: ziurcast-base generate api <ApiName> --scope <scope>');
+    throw new Error(generateApiUsage);
   }
 
   const nameError = validateApiName(apiName);

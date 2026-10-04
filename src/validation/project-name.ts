@@ -37,6 +37,13 @@ export const validateProjectName = (value: string): ProjectNameValidation => {
     };
   }
 
+  if (projectName.startsWith('-')) {
+    return {
+      valid: false,
+      message: 'Project name cannot start with a hyphen.',
+    };
+  }
+
   if (/[. ]$/.test(projectName)) {
     return {
       valid: false,

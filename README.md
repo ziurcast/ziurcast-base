@@ -39,6 +39,8 @@ npm run generate:page -- UsersPage --scope modules/users --route /users
 npm run generate:module -- users --api getUsers --hook useUsers
 ```
 
+Options may be given in any order. Run `npx ziurcast-base --help` for every command's usage, or `--version` for the installed generator version.
+
 `generate module` accepts one or more explicitly selected `--page`, `--api`, and `--hook` artifacts. A page selection requires `--route`. See each command's argument rules and the generated `architecture/` contract before use.
 
 ## Framework support

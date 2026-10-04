@@ -6,7 +6,12 @@ export const runCommand = async (
   cwd: string,
 ): Promise<void> =>
   new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, stdio: 'inherit' });
+    // En Windows, npm es un script .cmd que solo puede ejecutarse a través de la shell.
+    // Los argumentos son fijos del generador, por lo que se unen sin escapar.
+    const child =
+      process.platform === 'win32'
+        ? spawn([command, ...args].join(' '), { cwd, stdio: 'inherit', shell: true })
+        : spawn(command, args, { cwd, stdio: 'inherit' });
 
     child.once('error', reject);
     child.once('exit', (code, signal) => {

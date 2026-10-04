@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ProjectOptions } from '../../types/project-options.js';
+import { readFileSync } from 'node:fs';
 import { buildPackageManifest } from './package-manifest.js';
 
 const createOptions = (
@@ -41,5 +42,16 @@ describe('generated package manifest', () => {
     expect(manifest.scripts).toHaveProperty('generate:api');
     expect(manifest.scripts).toHaveProperty('generate:page');
     expect(manifest.scripts).toHaveProperty('generate:module');
+  });
+
+  it('depends on the running generator version', () => {
+    const generatorManifest = JSON.parse(
+      readFileSync(new URL('../../../package.json', import.meta.url), 'utf8'),
+    ) as { version: string };
+    const manifest = buildPackageManifest(createOptions());
+
+    expect(manifest.devDependencies['ziurcast-base']).toBe(
+      `^${generatorManifest.version}`,
+    );
   });
 });

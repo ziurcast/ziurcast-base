@@ -15,13 +15,13 @@ The generator's current lockfile audit reports zero vulnerabilities. Both genera
 | Severity | Direct affected dependency | Transitive affected packages | Finding / safe path |
 |---|---|---|---|
 | High (5 package entries) | `eslint-config-next@16.3.8` | `@next/eslint-plugin-next`, `fast-glob`, `micromatch`, `braces@3.0.3` | The `braces` denial-of-service advisory affects `<=3.0.3` ([GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)). npm has no `braces@3.0.4`; the available npm audit fix proposes downgrading `eslint-config-next` to `14.2.35`, a major framework tooling downgrade from the generated Next.js 16 stack. No compatible patch was identified. Do not apply that downgrade or an unverified override. |
-| Moderate (2 package entries) | `vitest@3.2.7` | `@vitest/mocker@3.2.7` | Path traversal / arbitrary file read in redirect mocks ([GHSA-82fw-gwwq-j7x9](https://github.com/advisories/GHSA-82fw-gwwq-j7x9)). npm identifies `vitest@4.1.11` as a fix, which is a major upgrade from the generated `^3.2.4` range. Review migration compatibility before changing the template. |
+| Moderate (2 package entries) | `vitest@3.2.7` | `@vitest/mocker@3.2.7` | Path traversal / arbitrary file read in redirect mocks ([GHSA-82fw-gwwq-j7x9](https://github.com/advisories/GHSA-82fw-gwwq-j7x9)). npm identifies `vitest@4.1.11` as a fix, which is a major upgrade from the generated `^3.2.4` range. That upgrade is currently blocked: with the npm 10 bundled with Node 22 (verified with npm 10.9.9), installing the generated project with `vitest@4.1.11` aborts with `Cannot read properties of null (reading 'edgesOut')` while resolving Vitest's peer set; npm 11 installs it. `vitest@4.0.x` installs on npm 10 but is affected by a critical advisory ([GHSA-5xrq-8626-4rwp](https://github.com/advisories/GHSA-5xrq-8626-4rwp), `>=4.0.0 <4.1.0`). Keep `^3.2.4` until a Vitest release installs on npm 10. |
 
 The package entries in npm's count share two advisory chains; they are not seven separate direct dependencies. The findings are development-only, so they do not currently affect generated application production dependencies. The high finding is still a reasonable release gate for a generator that emits this toolchain. No `npm audit fix` or automatic dependency changes were applied.
 
 ## Runtime and CI
 
-- The generator requires Node.js `>=22.13`. Node 22 was not installed in the local implementation environment; Node 25 checks do not substitute for the Node 22 contract.
+- The generator requires Node.js `>=22.13`. On 2026-10-04 the complete CI sequence and `npm run release:smoke` passed locally on Node 22.23.3 with npm 10.9.9, in addition to hosted CI.
 - `.github/workflows/ci.yml` selects Node 22 and runs tests, typecheck, lint, build, pack, and the local-tarball smoke. A hosted GitHub Actions run on Node 22 has passed.
 - The architecture's format-check rule applies to generated applications. Their manifests include Prettier and `format:check`. The generator repository itself has no formatter configured; its CI therefore does not add Prettier solely for this check. The release smoke installs each generated app and runs its own format check.
 
@@ -42,6 +42,6 @@ The script requires Node.js `>=22.13`, macOS or Linux, npm, and system Python 3 
 2. Distribution license: MIT (approved).
 3. Generated-project audit findings: reviewed and accepted (see above). Re-review if the counts or advisories change.
 4. Obtain a passing hosted CI run on Node 22 (passed).
-The local clean-pack comparison and tarball-installed CLI smoke are implemented and passing under Node 25. After an approved release, installing the published package from npm is a post-publication verification, not a pre-publication prerequisite.
+The local clean-pack comparison and tarball-installed CLI smoke are implemented and passing under Node 22 and Node 25. After an approved release, installing the published package from npm is a post-publication verification, not a pre-publication prerequisite.
 
 No package has been published as part of this work.

@@ -18,6 +18,11 @@ describe('project name validation', () => {
     expect(validateProjectName('CON').valid).toBe(false);
   });
 
+  it('rejects names that look like command-line options', () => {
+    expect(validateProjectName('--help').valid).toBe(false);
+    expect(validateProjectName('-v').valid).toBe(false);
+  });
+
   it('rejects npm reserved package names', () => {
     expect(validateProjectName('node_modules').valid).toBe(false);
   });
