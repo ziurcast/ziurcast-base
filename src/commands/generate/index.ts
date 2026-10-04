@@ -11,7 +11,7 @@ export const runGenerateCommand = async (
 ): Promise<void> => {
   if (command !== 'component' || !componentName) {
     throw new Error(
-      'Usage: create-base-app generate component <ComponentName>',
+      'Usage: ziurcast-base generate component <ComponentName>',
     );
   }
 

@@ -8,7 +8,7 @@ Application functions use arrow functions as required by `coding-standards.md`.
 
 ## Explicit generator scopes
 
-`create-base-app generate hook` requires `--scope <scope>`. A scope is an
+`ziurcast-base generate hook` requires `--scope <scope>`. A scope is an
 architectural ownership path relative to `src/`, written with `/` separators.
 It is not a filesystem path: do not include the `src/` prefix, `.` or `..`.
 Each path segment begins with an English letter or digit and may continue with

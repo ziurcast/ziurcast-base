@@ -8,7 +8,7 @@ Supabase, when selected, adds client/configuration and environment-variable exam
 
 ## API function generator
 
-`create-base-app generate api <ApiName> --scope <scope>` generates one backend API function file. The name is a lower camel case identifier containing only English letters and digits, beginning with a lowercase English letter. The same name is used for the `.ts` filename and the named export. The function is an arrow function. Its initial body contains a Spanish implementation reminder and throws `new Error('Not implemented')`; it does not prescribe parameters, a return value, backend protocol, or business logic.
+`ziurcast-base generate api <ApiName> --scope <scope>` generates one backend API function file. The name is a lower camel case identifier containing only English letters and digits, beginning with a lowercase English letter. The same name is used for the `.ts` filename and the named export. The function is an arrow function. Its initial body contains a Spanish implementation reminder and throws `new Error('Not implemented')`; it does not prescribe parameters, a return value, backend protocol, or business logic.
 
 The scope is required and is an architectural reference relative to `src/`:
 

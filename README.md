@@ -9,14 +9,14 @@ Project Base Generator is an npm CLI for creating an opinionated Next.js applica
 
 ## Create a project
 
-The intended npm interface, after the package identity is approved and released, accepts a project name or asks for one in the wizard:
+The npm package is `ziurcast-base`. It accepts a project name or asks for one in the wizard:
 
 ```bash
-npx create-base-app my-project
-npx create-base-app
+npx ziurcast-base@latest my-project
+npx ziurcast-base@latest
 ```
 
-This package has not been published to npm. The npm name in this workspace is unresolved: `create-base-app@0.1.0` is not available under the current public registry identity. Until that is resolved and the package is released, these `npx` commands do not select this workspace's implementation. To run the checked-out CLI locally, install dependencies, build it, and invoke the generated entry point:
+To run the checked-out CLI locally, install dependencies, build it, and invoke the generated entry point:
 
 ```bash
 npm run build
@@ -29,7 +29,7 @@ The generated project includes a complete versioned `architecture/` copy and sup
 
 ## Generate artifacts
 
-Run these commands from a generated project. The package `create-base-app` must be installed (the generated manifest declares it as a development dependency).
+Run these commands from a generated project. The package `ziurcast-base` must be installed (the generated manifest declares it as a development dependency).
 
 ```bash
 npm run generate:component -- Button

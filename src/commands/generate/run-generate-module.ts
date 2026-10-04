@@ -25,7 +25,7 @@ export const parseGenerateModuleArguments = (
 
   if (!domain || domain.startsWith('--')) {
     throw new Error(
-      'Usage: create-base-app generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>]',
+      'Usage: ziurcast-base generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>]',
     );
   }
 

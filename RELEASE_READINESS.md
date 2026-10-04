@@ -4,7 +4,7 @@ Audit snapshot: 2026-10-04. This is maintainer-facing status, not an npm release
 
 ## Decisions that require the package owner
 
-- This workspace declares `create-base-app@0.1.0`. The public npm registry currently returns `create-base-app@1.0.0`; `create-base-app@0.1.0` is unavailable. Do not assume this workspace owns the existing package. Confirm ownership or approve another package identity before publishing. If the identity changes, update the package name, generated `create-base-app` development dependency, command examples, and bin smoke check together.
+- Package identity: resolved. The package was renamed from the working name `create-base-app` (owned by an unrelated npm publisher) to `ziurcast-base`. The package name, bin, generated development dependency, generated `generate:*` scripts, usage messages, command examples, and smoke check were updated together. `ziurcast-base` was unregistered on npm at the time of the rename.
 - The generator package declares `license: UNLICENSED`. Do not replace it with a public license without owner approval. Decide whether distribution is intentionally unlicensed/proprietary or specify an approved license before public distribution.
 
 ## Dependency audit
@@ -31,13 +31,13 @@ The package entries in npm's count share two advisory chains; they are not seven
 
 ## Local package smoke and reproducibility
 
-Run `npm run release:smoke` from the generator repository. It builds and packs two isolated source copies, compares tarball hashes and extracted package contents, installs the local tarball into a clean prefix, runs the installed binary through minimal and i18n + Supabase wizard flows, and checks generated files/configuration. It redirects only each throwaway generated project's `create-base-app` dev dependency to the exact tarball under test because the public package identity is unresolved; it then installs each project and runs test, typecheck, lint, format check, and build. No published npm package is used, and no project dependency is replaced with an unrelated package.
+Run `npm run release:smoke` from the generator repository. It builds and packs two isolated source copies, compares tarball hashes and extracted package contents, installs the local tarball into a clean prefix, runs the installed binary through minimal and i18n + Supabase wizard flows, and checks generated files/configuration. It redirects only each throwaway generated project's `ziurcast-base` dev dependency to the exact tarball under test so the unpublished build is what gets validated; it then installs each project and runs test, typecheck, lint, format check, and build. No published npm package is used, and no project dependency is replaced with an unrelated package.
 
 The script requires Node.js `>=22.13`, macOS or Linux, npm, and system Python 3 (used only to drive the installed CLI through a pseudo-terminal). Run it under Node 22 in CI for the contractual validation.
 
 ## Publication gates
 
-1. Confirm the npm package identity and permission to publish it.
+1. Authenticate with npm as the account that will own `ziurcast-base`.
 2. Approve the distribution license.
 3. Review the generated-project audit findings, especially the high-severity Next.js lint dependency chain and the Vitest major upgrade; do not publish with unreviewed high findings.
 4. Obtain a passing hosted CI run on Node 22.

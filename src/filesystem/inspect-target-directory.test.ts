@@ -7,7 +7,7 @@ import { inspectTargetDirectory } from './inspect-target-directory.js';
 const temporaryDirectories: string[] = [];
 
 const createTemporaryDirectory = async (): Promise<string> => {
-  const directory = await mkdtemp(join(tmpdir(), 'create-base-app-'));
+  const directory = await mkdtemp(join(tmpdir(), 'ziurcast-base-'));
   temporaryDirectories.push(directory);
   return directory;
 };

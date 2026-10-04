@@ -18,7 +18,7 @@ export const runGenerateHookCommand = async (
 ): Promise<void> => {
   if (!hookName || !scope) {
     throw new Error(
-      'Usage: create-base-app generate hook <HookName> --scope <scope>',
+      'Usage: ziurcast-base generate hook <HookName> --scope <scope>',
     );
   }
 

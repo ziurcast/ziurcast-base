@@ -19,7 +19,7 @@ export const runGeneratePageCommand = async (
 ): Promise<void> => {
   if (!pageName || !scope || !route) {
     throw new Error(
-      'Usage: create-base-app generate page <PageName> --scope modules/<domain> --route /<path>',
+      'Usage: ziurcast-base generate page <PageName> --scope modules/<domain> --route /<path>',
     );
   }
 

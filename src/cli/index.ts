@@ -50,12 +50,12 @@ const runCli = async (): Promise<void> => {
     }
 
     throw new Error(
-      'Usage: create-base-app generate component <ComponentName> | create-base-app generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>] | create-base-app generate hook <HookName> --scope <scope> | create-base-app generate api <ApiName> --scope <scope> | create-base-app generate page <PageName> --scope modules/<domain> --route /<path>',
+      'Usage: ziurcast-base generate component <ComponentName> | ziurcast-base generate module <Domain> [--page <PageName> --route /<path>] [--api <ApiName>] [--hook <HookName>] | ziurcast-base generate hook <HookName> --scope <scope> | ziurcast-base generate api <ApiName> --scope <scope> | ziurcast-base generate page <PageName> --scope modules/<domain> --route /<path>',
     );
   }
 
   if (args.length > 1) {
-    throw new Error('Usage: create-base-app [project-name]');
+    throw new Error('Usage: ziurcast-base [project-name]');
   }
 
   await runCreateProject(args[0]);

@@ -35,7 +35,7 @@ describe('generated package manifest', () => {
 
     expect(manifest.dependencies).not.toHaveProperty('@inquirer/prompts');
     expect(manifest.dependencies).not.toHaveProperty('validate-npm-package-name');
-    expect(manifest.devDependencies).toHaveProperty('create-base-app');
+    expect(manifest.devDependencies).toHaveProperty('ziurcast-base');
     expect(manifest.scripts).toHaveProperty('generate:component');
     expect(manifest.scripts).toHaveProperty('generate:hook');
     expect(manifest.scripts).toHaveProperty('generate:api');

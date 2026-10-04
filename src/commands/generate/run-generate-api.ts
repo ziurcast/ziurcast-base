@@ -17,7 +17,7 @@ export const runGenerateApiCommand = async (
   workingDirectory = process.cwd(),
 ): Promise<void> => {
   if (!apiName || !scope) {
-    throw new Error('Usage: create-base-app generate api <ApiName> --scope <scope>');
+    throw new Error('Usage: ziurcast-base generate api <ApiName> --scope <scope>');
   }
 
   const nameError = validateApiName(apiName);

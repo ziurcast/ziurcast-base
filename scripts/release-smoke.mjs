@@ -223,11 +223,11 @@ const validateGeneratedProject = (projectDirectory, localPackageTarball) => {
   const manifestPath = join(projectDirectory, 'package.json');
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 
-  // El nombre npm aún está pendiente; solo el proyecto temporal apunta al tarball que se está probando.
-  manifest.devDependencies['create-base-app'] = `file:${localPackageTarball}`;
+  // Solo el proyecto temporal apunta al tarball que se está probando, no a la versión publicada en npm.
+  manifest.devDependencies['ziurcast-base'] = `file:${localPackageTarball}`;
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   console.log(
-    'For this temporary validation only, create-base-app resolves to the exact local tarball because the approved npm identity is pending.',
+    'For this temporary validation only, ziurcast-base resolves to the exact local tarball under test instead of the npm registry.',
   );
 
   run('npm', ['install', '--no-audit', '--no-fund'], {
