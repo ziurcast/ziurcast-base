@@ -1,10 +1,10 @@
 import { confirm, input, select } from '@inquirer/prompts';
-import type { Agent, ProjectAnswers } from '../types/project-options.js';
+import type { Agent, Framework, ProjectAnswers } from '../types/project-options.js';
 import { validateProjectName } from '../validation/project-name.js';
 
 export type WizardAnswers = Omit<
   ProjectAnswers,
-  'projectName' | 'packageName' | 'framework'
+  'projectName' | 'packageName'
 >;
 
 export const promptForProjectName = async (): Promise<{
@@ -31,6 +31,14 @@ export const promptForProjectName = async (): Promise<{
 };
 
 export const promptForProjectOptions = async (): Promise<WizardAnswers> => {
+  const framework = await select<Framework>({
+    message: 'Framework',
+    choices: [
+      { name: 'Next.js', value: 'next' },
+      { name: 'React (Vite SPA)', value: 'react' },
+    ],
+    default: 'next',
+  });
   const internationalization = await confirm({
     message: 'Enable internationalization?',
     default: false,
@@ -56,6 +64,7 @@ export const promptForProjectOptions = async (): Promise<WizardAnswers> => {
   });
 
   return {
+    framework,
     internationalization,
     supabase,
     agent,

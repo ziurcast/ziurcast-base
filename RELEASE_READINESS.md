@@ -10,7 +10,7 @@ Audit snapshot: 2026-10-04. This is maintainer-facing status, not an npm release
 
 ## Dependency audit
 
-The generator's current lockfile audit reports zero vulnerabilities. Both generated Next.js audit variants (minimal and i18n + Supabase) report seven vulnerable package entries: five high and two moderate. All seven are in development dependency trees; the audit reported no vulnerable production dependency.
+The generator's current lockfile audit reports zero vulnerabilities. Both generated Next.js audit variants (minimal and i18n + Supabase) report seven vulnerable package entries: five high and two moderate. Both generated React (Vite) variants report only the two moderate Vitest entries, because they do not use `eslint-config-next`. All entries are in development dependency trees; the audit reported no vulnerable production dependency.
 
 | Severity | Direct affected dependency | Transitive affected packages | Finding / safe path |
 |---|---|---|---|
@@ -32,7 +32,7 @@ The package entries in npm's count share two advisory chains; they are not seven
 
 ## Local package smoke and reproducibility
 
-Run `npm run release:smoke` from the generator repository. It builds and packs two isolated source copies, compares tarball hashes and extracted package contents, installs the local tarball into a clean prefix, runs the installed binary through minimal and i18n + Supabase wizard flows, and checks generated files/configuration. It redirects only each throwaway generated project's `ziurcast-base` dev dependency to the exact tarball under test so the unpublished build is what gets validated; it then installs each project and runs test, typecheck, lint, format check, and build. No published npm package is used, and no project dependency is replaced with an unrelated package.
+Run `npm run release:smoke` from the generator repository. It builds and packs two isolated source copies, compares tarball hashes and extracted package contents, installs the local tarball into a clean prefix, runs the installed binary through minimal and i18n + Supabase wizard flows for both the Next.js and React presets, and checks generated files/configuration. It redirects only each throwaway generated project's `ziurcast-base` dev dependency to the exact tarball under test so the unpublished build is what gets validated; it then installs each project and runs test, typecheck, lint, format check, and build. No published npm package is used, and no project dependency is replaced with an unrelated package.
 
 The script requires Node.js `>=22.13`, macOS or Linux, npm, and system Python 3 (used only to drive the installed CLI through a pseudo-terminal). Run it under Node 22 in CI for the contractual validation.
 

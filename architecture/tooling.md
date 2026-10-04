@@ -4,6 +4,7 @@ The generated project uses TypeScript and React, with Next.js or a React SPA pre
 
 - Zustand for state management.
 - React Router Declarative Mode for routing in the React SPA preset.
+- Vite for the React SPA preset's development server and build, with `@vitejs/plugin-react` and `@tailwindcss/vite`. Vitest reuses the Vite configuration in that preset.
 - TanStack Query for server/query state.
 - React Hook Form and Yup for forms and validation.
 - Tailwind CSS for styling.
@@ -27,5 +28,5 @@ The validation stages and their responsibilities are defined in `testing.md`; Co
 
 ## Decision Status
 
-- **Approved:** listed libraries/tooling, npm, Node.js 22 LTS target/minimum, and framework-specific i18n integrations.
+- **Approved:** listed libraries/tooling, npm, Node.js 22 LTS target/minimum, Vite for the React SPA preset, and framework-specific i18n integrations.
 - **Extensible:** exact compatible package versions and configuration syntax are selected during implementation; no additional dependency is implied by this document.

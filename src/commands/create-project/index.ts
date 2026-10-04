@@ -11,8 +11,12 @@ import { validateProjectName } from '../../validation/project-name.js';
 import type { ProjectOptions } from '../../types/project-options.js';
 import { generateProject } from '../../generators/project/index.js';
 
+const frameworkNames = {
+  next: 'Next.js',
+  react: 'React (Vite SPA)',
+};
+
 const displayProjectSummary = (options: ProjectOptions): void => {
-  const frameworkName = options.framework === 'next' ? 'Next.js' : 'React';
   const agentName = {
     both: 'Both',
     codex: 'Codex',
@@ -24,7 +28,7 @@ const displayProjectSummary = (options: ProjectOptions): void => {
   console.log(`Project: ${options.projectName}`);
   console.log(`Package: ${options.packageName}`);
   console.log(`Directory: ${options.targetDirectory}`);
-  console.log(`Framework: ${frameworkName}`);
+  console.log(`Framework: ${frameworkNames[options.framework]}`);
   console.log(`i18n: ${options.internationalization ? 'Yes' : 'No'}`);
   console.log(`Supabase: ${options.supabase ? 'Yes' : 'No'}`);
   console.log(`Agents: ${agentName}`);
@@ -72,7 +76,7 @@ export const runCreateProject = async (
 
   const answers = await promptForProjectOptions();
   const options = buildProjectOptions(
-    { ...nameResult, ...answers, framework: 'next' },
+    { ...nameResult, ...answers },
     workingDirectory,
   );
 
@@ -83,7 +87,9 @@ export const runCreateProject = async (
     return undefined;
   }
 
-  console.log('\nProject configuration ready. Generating Next.js project...');
+  console.log(
+    `\nProject configuration ready. Generating ${frameworkNames[options.framework]} project...`,
+  );
   await generateProject(options, { allowExistingEmptyDirectory });
   console.log(`\nProject created at ${options.targetDirectory}.`);
 

@@ -1,6 +1,6 @@
 import { applyGenerationPlan } from '../../filesystem/apply-generation-plan.js';
 import { planBarrelExport } from '../../filesystem/plan-barrel-export.js';
-import { planNextTranslationRegistryUpdate } from '../i18n/next-intl/translation-registry.js';
+import { planComponentTranslationRegistryUpdate } from '../i18n/translation-registry.js';
 import type {
   GenerationFileChange,
   GenerationPlan,
@@ -59,7 +59,7 @@ export const createComponentGenerationPlan = async (
   changes.push(barrelChange);
 
   if (hasLocalTranslations(definition, context)) {
-    const registryChange = await planNextTranslationRegistryUpdate(
+    const registryChange = await planComponentTranslationRegistryUpdate(
       context.rootDirectory,
       definition.name,
     );

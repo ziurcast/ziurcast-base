@@ -152,7 +152,7 @@ const runInstalledCli = (
   binaryPath,
   workingDirectory,
   projectName,
-  { internationalization, supabase },
+  { framework, internationalization, supabase },
 ) => {
   const pythonPtyRunner = [
     'import errno, json, os, pty, select, sys, time',
@@ -161,7 +161,7 @@ const runInstalledCli = (
     'if child_pid == 0:',
     '    os.execvpe(binary, [binary, project_name], os.environ)',
     'features = json.loads(sys.argv[3])',
-    "prompts = [(b'Enable internationalization?', b'y\\r' if features['internationalization'] else b'\\r'), (b'Use Supabase?', b'y\\r' if features['supabase'] else b'\\r'), (b'AI Agent', b'\\r'), (b'Initialize Git?', b'n\\r'), (b'Install dependencies?', b'n\\r'), (b'Create project?', b'\\r')]",
+    "prompts = [(b'Framework', b'\\x1b[B\\r' if features['framework'] == 'react' else b'\\r'), (b'Enable internationalization?', b'y\\r' if features['internationalization'] else b'\\r'), (b'Use Supabase?', b'y\\r' if features['supabase'] else b'\\r'), (b'AI Agent', b'\\r'), (b'Initialize Git?', b'n\\r'), (b'Install dependencies?', b'n\\r'), (b'Create project?', b'\\r')]",
     'prompt_index, output_buffer = 0, bytearray()',
     'deadline = time.monotonic() + 100',
     'while True:',
@@ -196,7 +196,7 @@ const runInstalledCli = (
       pythonPtyRunner,
       binaryPath,
       projectName,
-      JSON.stringify({ internationalization, supabase }),
+      JSON.stringify({ framework, internationalization, supabase }),
     ],
     {
     cwd: workingDirectory,
@@ -266,7 +266,8 @@ const main = () => {
   const requiredEntries = [
     'package/dist/cli/index.js',
     'package/src/templates/load-template.ts',
-    'package/src/templates/project/features/no-i18n/src/app/page.tsx.tpl',
+    'package/src/templates/project/features/no-i18n/next/src/app/page.tsx.tpl',
+    'package/src/templates/project/features/no-i18n/react/src/routes/AppRoutes.tsx.tpl',
     'package/architecture/README.md',
     'package/architecture/VERSION',
   ];
@@ -303,6 +304,7 @@ const main = () => {
   const projectVariants = [
     {
       name: projectName,
+      framework: 'next',
       internationalization: false,
       supabase: false,
       requiredFiles: [
@@ -313,12 +315,15 @@ const main = () => {
         'architecture/README.md',
         'src/app/layout.tsx',
         'src/app/page.tsx',
+        'src/app/icon.svg',
+        'public/logo.svg',
         'AGENTS.md',
         'CLAUDE.md',
       ],
     },
     {
       name: `${projectName}-optional`,
+      framework: 'next',
       internationalization: true,
       supabase: true,
       requiredFiles: [
@@ -334,7 +339,49 @@ const main = () => {
         'CLAUDE.md',
       ],
     },
+    {
+      name: `${projectName}-react`,
+      framework: 'react',
+      internationalization: false,
+      supabase: false,
+      requiredFiles: [
+        'package.json',
+        '.project-base-generator.json',
+        'architecture/VERSION',
+        'index.html',
+        'vite.config.ts',
+        'src/main.tsx',
+        'src/routes/AppRoutes.tsx',
+        'public/logo.svg',
+        'AGENTS.md',
+        'CLAUDE.md',
+      ],
+    },
+    {
+      name: `${projectName}-react-optional`,
+      framework: 'react',
+      internationalization: true,
+      supabase: true,
+      requiredFiles: [
+        'package.json',
+        '.project-base-generator.json',
+        'architecture/VERSION',
+        'index.html',
+        'src/routes/AppRoutes.tsx',
+        'src/routes/LocaleRoute.tsx',
+        'src/i18n/config.ts',
+        'src/i18n/messages.ts',
+        'src/core/supabase/client.ts',
+        '.env.example',
+      ],
+    },
   ];
+
+  // Paquetes que delatan cada preset y su integración de i18n.
+  const frameworkPackages = {
+    next: { framework: 'next', i18n: 'next-intl' },
+    react: { framework: 'react-router', i18n: 'react-i18next' },
+  };
 
   for (const variant of projectVariants) {
     const variantDirectory = join(temporaryRoot, variant.name);
@@ -357,13 +404,18 @@ const main = () => {
       readFileSync(join(variantDirectory, '.project-base-generator.json'), 'utf8'),
     );
 
+    const expectedPackages = frameworkPackages[variant.framework];
+    const otherFramework = variant.framework === 'next' ? 'react' : 'next';
+
     if (
       generatedManifest.name !== variant.name ||
-      generatedConfig.framework !== 'next' ||
+      generatedConfig.framework !== variant.framework ||
+      !generatedManifest.dependencies[expectedPackages.framework] ||
+      Boolean(generatedManifest.dependencies[frameworkPackages[otherFramework].framework]) ||
       generatedConfig.architectureVersion !== architectureVersion ||
       generatedConfig.features.internationalization !== variant.internationalization ||
       generatedConfig.features.supabase !== variant.supabase ||
-      Boolean(generatedManifest.dependencies['next-intl']) !== variant.internationalization ||
+      Boolean(generatedManifest.dependencies[expectedPackages.i18n]) !== variant.internationalization ||
       Boolean(generatedManifest.dependencies['@supabase/supabase-js']) !== variant.supabase ||
       existsSync(join(variantDirectory, 'src/i18n')) !== variant.internationalization ||
       existsSync(join(variantDirectory, 'src/core/supabase')) !== variant.supabase

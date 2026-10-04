@@ -4,6 +4,6 @@ The canonical project architecture is in `architecture/`. Read `architecture/REA
 
 - Keep code identifiers and filenames in English; write code comments in Spanish.
 - Use arrow functions for application functions.
-- Keep Next.js routing/composition files free of business logic.
+- Keep routing/composition files (Next.js `app/` or React `routes/`) free of business logic.
 - Follow the scope and lazy-directory rules in `architecture/`.
 - Follow Conventional Commits. AI-generated commit messages must be in English; Commitlint validates structure, not language.

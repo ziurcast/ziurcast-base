@@ -34,10 +34,6 @@ export const createModuleGenerationPlan = async (
 ): Promise<GenerationPlan> => {
   validateModuleGenerationSelections(selections);
 
-  if (context.framework === 'react' && selections.page) {
-    throw new Error('Module pages are not supported in React projects yet.');
-  }
-
   const scope = `modules/${domain}`;
   const plans: GenerationPlan[] = [];
 

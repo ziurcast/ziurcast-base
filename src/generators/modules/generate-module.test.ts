@@ -281,7 +281,7 @@ describe('module generator', () => {
     ).toContain('src/app/[locale]/users/page.tsx');
   });
 
-  it('allows API and hook generation in React but rejects pages atomically', async () => {
+  it('generates API and hook artifacts in React projects', async () => {
     const context = await createContext('react');
     const plan = await createModuleGenerationPlan(context, 'users', {
       api: 'getUsers',
@@ -292,19 +292,10 @@ describe('module generator', () => {
       'src/modules/users/api/getUsers.ts',
       'src/modules/users/moduleHooks/useUsers.ts',
     ]);
-    await generateModule(context, 'users', {
-      api: 'getUsers',
-      hook: 'useUsers',
-    });
-    await expect(
-      readFile(join(context.rootDirectory, 'src/modules/users/api/getUsers.ts'), 'utf8'),
-    ).resolves.toContain('export const getUsers');
-    await expect(
-      readFile(
-        join(context.rootDirectory, 'src/modules/users/moduleHooks/useUsers.ts'),
-        'utf8',
-      ),
-    ).resolves.toContain('export const useUsers');
+  });
+
+  it('rejects React module pages atomically when the route registry is missing', async () => {
+    const context = await createContext('react');
 
     await expect(
       generateModule(context, 'users', {
@@ -312,10 +303,37 @@ describe('module generator', () => {
         page: 'UserList',
         route: '/users',
       }),
-    ).rejects.toThrow('Module pages are not supported in React projects yet.');
+    ).rejects.toThrow('The React route registry is missing: src/routes/AppRoutes.tsx');
     await expect(
       readFile(join(context.rootDirectory, 'src/modules/users/api/getPosts.ts'), 'utf8'),
     ).rejects.toThrow();
+  });
+
+  it('registers React module pages in the route registry', async () => {
+    const context = await createContext('react');
+    await mkdir(join(context.rootDirectory, 'src/routes'), { recursive: true });
+    await writeFile(
+      join(context.rootDirectory, 'src/routes/AppRoutes.tsx'),
+      "import { Route, Routes } from 'react-router';\n" +
+        '// <pbg:importaciones-rutas>\n\n' +
+        'export const AppRoutes = () => (\n' +
+        '  <Routes>\n' +
+        '    {/* <pbg:rutas> */}\n' +
+        '  </Routes>\n' +
+        ');\n',
+    );
+
+    await generateModule(context, 'users', { page: 'UserList', route: '/users' });
+
+    await expect(
+      readFile(join(context.rootDirectory, 'src/modules/users/pages/UserList/index.tsx'), 'utf8'),
+    ).resolves.toContain('export const UserList');
+    const routes = await readFile(
+      join(context.rootDirectory, 'src/routes/AppRoutes.tsx'),
+      'utf8',
+    );
+    expect(routes).toContain("import { UserList } from '@/modules/users/pages/UserList';");
+    expect(routes).toContain('    <Route path="/users" element={<UserList />} />');
   });
 
   it('creates no empty directories', async () => {
