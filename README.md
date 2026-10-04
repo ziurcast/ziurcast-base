@@ -59,3 +59,7 @@ npm pack
 `npm pack` runs the build through the `prepack` lifecycle and includes compiled `dist/`, project templates, and `architecture/` in the package. `package-lock.json` should be used for reproducible development installs.
 
 Generated applications include scripts for development, testing, linting, formatting, typechecking, building, and artifact generation. Their complete validation flow is documented in the copied `architecture/testing.md`.
+
+## License
+
+[MIT](LICENSE)

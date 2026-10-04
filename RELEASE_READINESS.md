@@ -5,7 +5,8 @@ Audit snapshot: 2026-10-04. This is maintainer-facing status, not an npm release
 ## Decisions that require the package owner
 
 - Package identity: resolved. The package was renamed from the working name `create-base-app` (owned by an unrelated npm publisher) to `ziurcast-base`. The package name, bin, generated development dependency, generated `generate:*` scripts, usage messages, command examples, and smoke check were updated together. `ziurcast-base` was unregistered on npm at the time of the rename.
-- The generator package declares `license: UNLICENSED`. Do not replace it with a public license without owner approval. Decide whether distribution is intentionally unlicensed/proprietary or specify an approved license before public distribution.
+- License: resolved. The package owner approved MIT; `package.json` declares `MIT` and the repository includes `LICENSE`.
+- Generated-project audit findings: accepted by the package owner for the first release. The seven findings below are development-only, and the only automatic fix downgrades `eslint-config-next` from the Next.js 16 stack to 14. Do not run `npm audit fix` or downgrade Next.js tooling to clear them.
 
 ## Dependency audit
 
@@ -21,7 +22,7 @@ The package entries in npm's count share two advisory chains; they are not seven
 ## Runtime and CI
 
 - The generator requires Node.js `>=22.13`. Node 22 was not installed in the local implementation environment; Node 25 checks do not substitute for the Node 22 contract.
-- `.github/workflows/ci.yml` selects Node 22 and runs tests, typecheck, lint, build, pack, and the local-tarball smoke. A hosted GitHub Actions run is still required.
+- `.github/workflows/ci.yml` selects Node 22 and runs tests, typecheck, lint, build, pack, and the local-tarball smoke. A hosted GitHub Actions run on Node 22 has passed.
 - The architecture's format-check rule applies to generated applications. Their manifests include Prettier and `format:check`. The generator repository itself has no formatter configured; its CI therefore does not add Prettier solely for this check. The release smoke installs each generated app and runs its own format check.
 
 ## Documentation alignment
@@ -37,10 +38,10 @@ The script requires Node.js `>=22.13`, macOS or Linux, npm, and system Python 3 
 
 ## Publication gates
 
-1. Authenticate with npm as the account that will own `ziurcast-base`.
-2. Approve the distribution license.
-3. Review the generated-project audit findings, especially the high-severity Next.js lint dependency chain and the Vitest major upgrade; do not publish with unreviewed high findings.
-4. Obtain a passing hosted CI run on Node 22.
+1. Authenticate with npm as the package owner's personal account, never a work account.
+2. Distribution license: MIT (approved).
+3. Generated-project audit findings: reviewed and accepted (see above). Re-review if the counts or advisories change.
+4. Obtain a passing hosted CI run on Node 22 (passed).
 The local clean-pack comparison and tarball-installed CLI smoke are implemented and passing under Node 25. After an approved release, installing the published package from npm is a post-publication verification, not a pre-publication prerequisite.
 
 No package has been published as part of this work.
