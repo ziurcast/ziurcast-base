@@ -67,13 +67,19 @@ Generated applications include scripts for development, testing, linting, format
 
 ## Releasing
 
-Releases are cut from an up-to-date, clean `main` with a single command:
+In Claude Code, run `/release` (optionally `/release 1.0.0`, `/release minor`, …) from an up-to-date, clean `main`. It runs a read-only preflight (branch, sync, tags, npm, CI for `HEAD`), the local validation, previews the release notes, and prepares the release; then it stops. The procedure is defined in `.claude/skills/release/SKILL.md`.
+
+The preparation step is also available directly:
 
 ```bash
-npm run release -- <major|minor|patch|x.y.z> [--dry-run] [--yes] [--smoke] [--skip-ci-check]
+npm run release -- <major|minor|patch|x.y.z> [--dry-run] [--skip-ci-check]
 ```
 
-It verifies the branch, the npm login, and the GitHub Actions run for the release commit; runs tests, typecheck, lint, and build (plus the release smoke with `--smoke`); prepends the release notes to `CHANGELOG.md` from Conventional Commits; bumps `package.json` and `package-lock.json`; commits `chore(release): vX.Y.Z` and tags `vX.Y.Z`; asks for confirmation and runs `npm publish`; pushes the commit and tag; and creates the GitHub release. Use `--dry-run` to preview the version and notes without changing anything.
+It prepends the notes generated from Conventional Commits to `CHANGELOG.md`, bumps `package.json` and `package-lock.json`, commits `chore(release): vX.Y.Z`, and creates the tag `vX.Y.Z`. It never pushes or publishes. Publishing is a deliberate, irreversible step run by a person:
+
+```bash
+git push origin main --follow-tags && npm publish
+```
 
 ## License
 
