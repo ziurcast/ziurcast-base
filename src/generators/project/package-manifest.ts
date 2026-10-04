@@ -36,7 +36,7 @@ const developmentDependencies: Record<string, string> = {
   'lint-staged': '^16.0.0',
   jsdom: '^27.0.0',
   prettier: '^3.0.0',
-  typescript: '^5.9.0',
+  typescript: '~6.0.3',
   vitest: '^3.2.4',
 };
 
