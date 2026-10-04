@@ -1,15 +1,13 @@
 @import 'tailwindcss';
 
-:root {
-  color-scheme: light;
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+  --color-brand: #66023c;
 }
 
-* {
-  box-sizing: border-box;
+:root {
+  color-scheme: light dark;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
+  @apply min-h-screen bg-white text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-50;
 }

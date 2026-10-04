@@ -7,6 +7,7 @@ import { runCommand } from '../../filesystem/run-command.js';
 import type { ProjectOptions } from '../../types/project-options.js';
 import type { BaseGeneratorConfig } from '../../types/base-generator-config.js';
 import { buildPackageManifest } from './package-manifest.js';
+import { toProjectNameLiteral } from './project-name-literal.js';
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const commonTemplates = resolve(packageRoot, 'src/templates/project/common');
@@ -20,7 +21,10 @@ export type ProjectGenerationOptions = {
 };
 
 const writeProjectTree = async (options: ProjectOptions): Promise<void> => {
-  const tokens = { projectName: options.projectName };
+  const tokens = {
+    projectName: options.projectName,
+    projectNameLiteral: toProjectNameLiteral(options.projectName),
+  };
   const targetDirectory = options.targetDirectory;
 
   await writeTemplateTree(commonTemplates, targetDirectory, tokens);

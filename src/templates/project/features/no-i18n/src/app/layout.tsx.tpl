@@ -3,7 +3,7 @@ import './globals.css';
 import { AppProviders } from '@/providers/AppProviders';
 
 export const metadata: Metadata = {
-  title: '{{projectName}}',
+  title: {{projectNameLiteral}},
   description: 'A project generated with Project Base Generator.',
 };
 
