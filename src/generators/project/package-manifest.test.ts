@@ -54,4 +54,19 @@ describe('generated package manifest', () => {
       `^${generatorManifest.version}`,
     );
   });
+
+  it('uses the Vite and React Router stack for the React preset', () => {
+    const manifest = buildPackageManifest(
+      createOptions({ framework: 'react', internationalization: true }),
+    );
+
+    expect(manifest.type).toBe('module');
+    expect(manifest.scripts.dev).toBe('vite');
+    expect(manifest.dependencies).toHaveProperty('react-router');
+    expect(manifest.dependencies).toHaveProperty('react-i18next');
+    expect(manifest.dependencies).not.toHaveProperty('next');
+    expect(manifest.dependencies).not.toHaveProperty('next-intl');
+    expect(manifest.devDependencies).toHaveProperty('vite');
+    expect(manifest.devDependencies).not.toHaveProperty('eslint-config-next');
+  });
 });

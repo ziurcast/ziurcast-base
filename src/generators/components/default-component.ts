@@ -1,10 +1,16 @@
 import { loadGeneratorTemplate } from '../../templates/load-template.js';
+import type { ProjectFramework } from '../../types/base-generator-config.js';
 
-export const createDefaultComponentSource = (componentName: string): string => {
-  const templatePath =
-    componentName === 'Button' ? 'component/next/Button.tsx.tpl' : 'component/next/Component.tsx.tpl';
+export const createDefaultComponentSource = (
+  componentName: string,
+  framework: ProjectFramework = 'next',
+): string => {
+  const templateName = componentName === 'Button' ? 'Button' : 'Component';
   const tokens = componentName === 'Button' ? {} : { componentName };
-  const source = loadGeneratorTemplate(templatePath, tokens);
+  const source = loadGeneratorTemplate(
+    `component/${framework}/${templateName}.tsx.tpl`,
+    tokens,
+  );
 
   return `${source.trimEnd()}\n`;
 };

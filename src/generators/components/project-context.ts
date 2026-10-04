@@ -11,14 +11,5 @@ const requiredArchitectureFiles = [
 
 export const readComponentProjectContext = async (
   startingDirectory: string,
-): Promise<ComponentProjectContext> => {
-  const context = await readProjectContext(startingDirectory, {
-    requiredArchitectureFiles,
-  });
-
-  if (context.framework !== 'next') {
-    throw new Error('Only compatible Next.js projects can generate components.');
-  }
-
-  return context;
-};
+): Promise<ComponentProjectContext> =>
+  readProjectContext(startingDirectory, { requiredArchitectureFiles });

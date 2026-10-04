@@ -23,9 +23,9 @@ npm run build
 node dist/cli/index.js my-project
 ```
 
-The wizard currently generates the Next.js preset. It asks whether to enable i18n, Supabase client/configuration, agent files (Both, Codex, Claude, or None), Git initialization, and dependency installation. It summarizes the configuration and asks for confirmation before generating. A non-empty destination is never overwritten; an existing empty directory requires confirmation.
+The wizard asks for the framework preset (Next.js or React with Vite), then whether to enable i18n, Supabase client/configuration, agent files (Both, Codex, Claude, or None), Git initialization, and dependency installation. It summarizes the configuration and asks for confirmation before generating. A non-empty destination is never overwritten; an existing empty directory requires confirmation.
 
-The generated project includes a complete versioned `architecture/` copy and supports optional `next-intl` and Supabase client configuration. Supabase authentication and migrations are not generated.
+The generated project includes a complete versioned `architecture/` copy and supports optional i18n (`next-intl` or `react-i18next`) and Supabase client configuration. Supabase authentication and migrations are not generated.
 
 ## Generate artifacts
 
@@ -45,7 +45,10 @@ Options may be given in any order. Run `npx ziurcast-base --help` for every comm
 
 ## Framework support
 
-Project creation and page/component generators currently support Next.js. React SPA project generation is not implemented. Hook and API generators support the framework contexts described by their command contracts; module generation rejects page selection in a React project.
+Both presets share the architecture contract, the stack (Tailwind CSS, TanStack Query, Zustand, React Hook Form, Vitest), and every artifact generator.
+
+- **Next.js:** App Router; pages are routed through files in `src/app/`; optional i18n uses `next-intl`.
+- **React:** Vite SPA with React Router Declarative Mode; pages are registered in `src/routes/AppRoutes.tsx`; optional i18n uses `react-i18next` with locale-prefixed routes (`/es`, `/en`).
 
 ## Development and validation
 

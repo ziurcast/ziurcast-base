@@ -25,7 +25,7 @@ export const runGenerateCommand = async (
   const context = await readComponentProjectContext(workingDirectory);
   const definition: ComponentDefinition = {
     name: componentName,
-    componentSource: createDefaultComponentSource(componentName),
+    componentSource: createDefaultComponentSource(componentName, context.framework),
   };
 
   await generateComponentFiles(context, definition);

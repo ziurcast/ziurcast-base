@@ -4,6 +4,7 @@ const isSafeSegment = (segment: string): boolean =>
 export type ResolvedPageTargets = {
   modulePagePath: string;
   nextRoutePath: string;
+  routeSegments: string[];
   namespace: string;
 };
 
@@ -63,6 +64,7 @@ export const resolvePageTargets = (
   return {
     modulePagePath: `${modulePagePath}/index.tsx`,
     nextRoutePath: appSegments.join('/'),
+    routeSegments,
     namespace,
   };
 };

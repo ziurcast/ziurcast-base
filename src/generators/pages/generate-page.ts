@@ -1,5 +1,5 @@
 import { applyGenerationPlan } from '../../filesystem/apply-generation-plan.js';
-import { planNextPageTranslationRegistryUpdate } from '../i18n/next-intl/translation-registry.js';
+import { planPageTranslationRegistryUpdate } from '../i18n/translation-registry.js';
 import { loadGeneratorTemplate } from '../../templates/load-template.js';
 import type {
   GenerationFileChange,
@@ -7,7 +7,17 @@ import type {
 } from '../../types/generation-plan.js';
 import type { ProjectContext } from '../../types/project-context.js';
 import { validatePageName } from './page-name.js';
+import { planReactRouteRegistration } from './react-route-registry.js';
 import { resolvePageTargets } from './resolve-page-targets.js';
+
+// Prettier usa un ancho de 80 columnas; los namespaces largos pasan a la línea siguiente.
+const formatNamespaceDeclaration = (namespace: string): string => {
+  const declaration = `const namespace = '${namespace}';`;
+
+  return declaration.length > 80
+    ? `const namespace =\n  '${namespace}';`
+    : declaration;
+};
 
 export const createPageGenerationPlan = async (
   context: ProjectContext,
@@ -15,35 +25,23 @@ export const createPageGenerationPlan = async (
   scope: string,
   route: string,
 ): Promise<GenerationPlan> => {
-  if (context.framework !== 'next') {
-    throw new Error('Only compatible Next.js projects can generate pages.');
-  }
-
   const nameError = validatePageName(pageName);
 
   if (nameError) {
     throw new Error(nameError);
   }
 
-  const targets = resolvePageTargets(
-    pageName,
-    scope,
-    route,
-    context.features.internationalization,
-  );
-  const routeImportPath = `@/${targets.modulePagePath
+  const { internationalization } = context.features;
+  const targets = resolvePageTargets(pageName, scope, route, internationalization);
+  const modulePageImportPath = `@/${targets.modulePagePath
     .replace(/^src\//, '')
     .replace(/\/index\.tsx$/, '')}`;
-  const moduleTemplate = context.features.internationalization
-    ? 'page/next/ModulePage.i18n.tsx.tpl'
-    : 'page/next/ModulePage.tsx.tpl';
+  const moduleTemplate = internationalization
+    ? 'page/common/ModulePage.i18n.tsx.tpl'
+    : 'page/common/ModulePage.tsx.tpl';
   const moduleContent = await loadGeneratorTemplate(moduleTemplate, {
     pageName,
-    namespace: targets.namespace,
-  });
-  const routeContent = await loadGeneratorTemplate('page/next/RoutePage.tsx.tpl', {
-    pageName,
-    importPath: routeImportPath,
+    namespaceDeclaration: formatNamespaceDeclaration(targets.namespace),
   });
   const changes: GenerationFileChange[] = [
     {
@@ -51,16 +49,32 @@ export const createPageGenerationPlan = async (
       relativePath: targets.modulePagePath,
       content: moduleContent,
     },
-    {
-      operation: 'create',
-      relativePath: targets.nextRoutePath,
-      content: routeContent,
-    },
   ];
 
-  if (context.features.internationalization) {
+  // Next.js enruta con un archivo en app/; React registra la ruta en src/routes/AppRoutes.tsx.
+  if (context.framework === 'next') {
+    changes.push({
+      operation: 'create',
+      relativePath: targets.nextRoutePath,
+      content: await loadGeneratorTemplate('page/next/RoutePage.tsx.tpl', {
+        pageName,
+        importPath: modulePageImportPath,
+      }),
+    });
+  } else {
+    changes.push(
+      await planReactRouteRegistration(context.rootDirectory, {
+        pageName,
+        importPath: modulePageImportPath,
+        routeSegments: targets.routeSegments,
+        internationalization,
+      }),
+    );
+  }
+
+  if (internationalization) {
     const messagesContent = await loadGeneratorTemplate(
-      'page/next/messages.json.tpl',
+      'page/common/messages.json.tpl',
       { pageName },
     );
     changes.push({
@@ -69,7 +83,7 @@ export const createPageGenerationPlan = async (
       content: messagesContent,
     });
     changes.push(
-      await planNextPageTranslationRegistryUpdate(
+      await planPageTranslationRegistryUpdate(
         context.rootDirectory,
         scope.split('/')[1] ?? '',
         pageName,
