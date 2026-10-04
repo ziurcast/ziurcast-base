@@ -1,6 +1,6 @@
 {
   "name": "ziurcast-base",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Opinionated CLI for generating frontend project bases",
   "repository": {
     "type": "git",
