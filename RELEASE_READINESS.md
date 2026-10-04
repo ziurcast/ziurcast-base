@@ -44,4 +44,8 @@ The script requires Node.js `>=22.13`, macOS or Linux, npm, and system Python 3 
 4. Obtain a passing hosted CI run on Node 22 (passed).
 The local clean-pack comparison and tarball-installed CLI smoke are implemented and passing under Node 22 and Node 25. After an approved release, installing the published package from npm is a post-publication verification, not a pre-publication prerequisite.
 
-No package has been published as part of this work.
+`ziurcast-base@0.1.0` was published to npm on 2026-10-04 from an earlier snapshot. The next release starts the stable line at `1.0.0`.
+
+## Release procedure
+
+From a clean `main` that matches `origin/main` and has a successful CI run, run `npm run release -- 1.0.0` (later releases use `major`, `minor`, or `patch`). Preview first with `--dry-run`. The command enforces the branch, sync, tag, npm-version, npm-login, and CI gates above, runs local validation (`--smoke` adds the release smoke under Node.js >=22.13), updates `CHANGELOG.md`, `package.json`, and `package-lock.json`, commits and tags the release, publishes to npm after confirmation (npm prompts for a one-time password when the account requires it), pushes `main` with the tag, and creates the GitHub release. If `npm publish` fails, the commit and tag remain local and the command prints how to retry or undo them.

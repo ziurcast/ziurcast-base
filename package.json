@@ -25,7 +25,8 @@
     "dist/types",
     "dist/validation",
     "src/templates",
-    "architecture"
+    "architecture",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=22.13"
@@ -36,7 +37,8 @@
     "release:smoke": "node scripts/release-smoke.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "release": "node scripts/release.mjs"
   },
   "license": "MIT",
   "dependencies": {
