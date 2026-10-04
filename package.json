@@ -1,0 +1,46 @@
+{
+  "name": "create-base-app",
+  "version": "0.1.0",
+  "description": "Opinionated CLI for generating frontend project bases",
+  "type": "module",
+  "bin": {
+    "create-base-app": "dist/cli/index.js"
+  },
+  "files": [
+    "dist/cli",
+    "dist/commands",
+    "dist/filesystem",
+    "dist/generators",
+    "dist/prompts",
+    "dist/project",
+    "dist/templates",
+    "dist/types",
+    "dist/validation",
+    "src/templates",
+    "architecture"
+  ],
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "release:smoke": "node scripts/release-smoke.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@inquirer/prompts": "^8.7.2",
+    "validate-npm-package-name": "^7.0.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.5",
+    "eslint": "^10.12.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^4.1.11"
+  }
+}
